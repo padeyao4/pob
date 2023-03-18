@@ -1,8 +1,12 @@
-use std::{process::exit, io::Write};
+mod node_core;
 
-use log::{info, warn};
+use chrono::Local;
+use clap::Parser;
+use node_core::commands::LsCommand;
+use std::{io::Write, process::exit};
 
 fn main() {
+    println!("weclome pob, today is {}", Local::now());
     loop {
         print!("> ");
         std::io::stdout().flush().unwrap();
@@ -10,23 +14,29 @@ fn main() {
         let input = std::io::stdin();
 
         let mut buf = String::new();
-        let res = input.read_line(&mut buf);
-        match res {
-            Ok(n) => info!("read message size {}", n),
-            Err(e) => warn!("{}", e),
+        input.read_line(&mut buf).unwrap();
+        buf = buf.trim().to_owned();
+
+        if buf.is_empty() {
+            continue;
         }
 
-        match buf.trim() {
-            "foo" => {
-                println!("{}",buf);
+        if buf == "exit" || buf == "quit" {
+            println!("~bye~");
+            exit(0);
+        }
+
+        let mut args = buf.split_whitespace();
+        let command_name = args.next();
+        match command_name {
+            Some("ls") => {
+                let cli = LsCommand::parse();
+                println!("{:?}", cli);
             }
-            "exit" => {
-                println!("{}",buf);
-                exit(0);
+            Some(_) => {
+                println!("other str")
             }
-            _ => {
-                println!("do nothing {}",buf);
-            }
+            None => println!("nothing to do"),
         }
     }
 }
