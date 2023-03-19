@@ -7,6 +7,12 @@ use std::{io::Write, process::exit};
 
 fn main() {
     println!("weclome pob, today is {}", Local::now());
+
+    // let mut model = Model {
+    //     today: std::time::SystemTime::now(),
+    //     current: todo!(),
+    // };
+
     loop {
         print!("> ");
         std::io::stdout().flush().unwrap();
